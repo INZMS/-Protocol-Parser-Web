@@ -58,3 +58,336 @@ export const mockHistory = [
   { id: 11, time: "2026-07-23 14:22:16", protocol: "JT-808", messageId: "0100", messageName: "终端注册", length: 32 },
   { id: 12, time: "2026-07-23 09:05:33", protocol: "2929协议", messageId: "8102", messageName: "位置上传报文", length: 56 }
 ];
+
+export const mockRecordDetails: Record<number, any> = {
+
+
+    // 1 位置上传
+    1: {
+        ...mockParseResult
+    },
+
+
+
+    // 2 终端心跳
+    2: {
+
+        protocol: "JT-808",
+
+        messageId: "0002",
+
+        messageName: "终端心跳",
+
+        length: 13,
+
+
+        rawHex:
+            "7E00020000000000010000007E",
+
+
+        fields: [
+
+            {
+                name:"消息ID",
+                offset:0,
+                len:2,
+                hex:"0002",
+                value:"终端心跳",
+                desc:"消息类型"
+            },
+
+
+            {
+                name:"消息体属性",
+                offset:2,
+                len:2,
+                hex:"0000",
+                value:"无消息体",
+                desc:"属性字段"
+            },
+
+
+            {
+                name:"流水号",
+                offset:4,
+                len:2,
+                hex:"0001",
+                value:"1",
+                desc:"消息流水"
+            }
+
+
+        ],
+
+
+        json:{
+
+
+            protocol:"JT-808",
+
+            messageId:"0002",
+
+            messageName:"终端心跳",
+
+
+            data:{
+
+
+                heartbeat:true,
+
+
+                time:"2026-07-26 10:15:22"
+
+
+            }
+
+
+        }
+
+    },
+
+
+
+
+
+    // 3 终端注册
+    3: {
+
+
+        protocol:"JT-808",
+
+        messageId:"0100",
+
+        messageName:"终端注册",
+
+        length:32,
+
+
+        rawHex:
+        "7E010000000000320034303030303030303030307E",
+
+
+        fields:[
+
+
+            {
+                name:"消息ID",
+                offset:0,
+                len:2,
+                hex:"0100",
+                value:"终端注册",
+                desc:"消息类型"
+            },
+
+
+            {
+                name:"终端手机号",
+                offset:4,
+                len:6,
+                hex:"340303030303",
+                value:"34000000000",
+                desc:"终端号码"
+            },
+
+
+            {
+                name:"制造商",
+                offset:10,
+                len:5,
+                hex:"ABCDEF",
+                value:"测试厂家",
+                desc:"厂商编号"
+            }
+
+
+        ],
+
+
+
+        json:{
+
+
+            protocol:"JT-808",
+
+            messageId:"0100",
+
+            messageName:"终端注册",
+
+
+            data:{
+
+
+                terminalNo:"34000000000",
+
+                manufacturer:"测试厂家"
+
+
+            }
+
+
+        }
+
+    },
+
+
+
+
+
+
+
+    // 4 2929登录应答
+    4:{
+
+
+        protocol:"2929协议",
+
+        messageId:"8100",
+
+        messageName:"终端登录应答",
+
+        length:25,
+
+
+        rawHex:
+        "292981000000000000000000000000000000",
+
+
+        fields:[
+
+
+            {
+                name:"消息ID",
+                offset:0,
+                len:2,
+                hex:"8100",
+                value:"登录应答",
+                desc:"消息类型"
+            },
+
+
+            {
+                name:"结果",
+                offset:2,
+                len:1,
+                hex:"00",
+                value:"成功",
+                desc:"应答结果"
+            }
+
+
+        ],
+
+
+
+        json:{
+
+
+            protocol:"2929协议",
+
+            messageId:"8100",
+
+            messageName:"终端登录应答",
+
+
+            data:{
+
+
+                result:"success"
+
+
+            }
+
+
+        }
+
+
+    },
+
+
+
+
+
+
+
+
+    // 5 2929位置上传
+    5:{
+
+
+        protocol:"2929协议",
+
+        messageId:"8102",
+
+        messageName:"位置上传报文",
+
+        length:56,
+
+
+        rawHex:
+        "292981020000000000000000000000",
+
+
+        fields:[
+
+
+            {
+                name:"消息ID",
+                offset:0,
+                len:2,
+                hex:"8102",
+                value:"位置上传",
+                desc:"消息类型"
+            },
+
+
+            {
+                name:"纬度",
+                offset:10,
+                len:4,
+                hex:"18071D0C",
+                value:"31.230400",
+                desc:"纬度"
+            },
+
+
+            {
+                name:"经度",
+                offset:14,
+                len:4,
+                hex:"0A1E0000",
+                value:"121.473700",
+                desc:"经度"
+            }
+
+
+        ],
+
+
+
+        json:{
+
+
+            protocol:"2929协议",
+
+            messageId:"8102",
+
+            messageName:"位置上传报文",
+
+
+            data:{
+
+
+                latitude:31.2304,
+
+                longitude:121.4737
+
+
+            }
+
+
+        }
+
+
+    }
+
+};

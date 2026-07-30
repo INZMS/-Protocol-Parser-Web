@@ -1,5 +1,6 @@
-import { Card, Row, Col, Tabs, Button, Empty } from "antd";
+import { Card, Row, Col, Tabs, Button, Empty,message } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
+import {useState} from "react";
 
 import ParseTable from "../../components/ParseTable";
 import { useParserStore } from "../../store/parser";
@@ -15,6 +16,7 @@ function StatBlock({ label, value, color }: { label: string; value: string | num
 
 export default function ResultPanel() {
     const { result } = useParserStore();
+    const [activeTab, setActiveTab] = useState("table");
 
     if (!result) {
         return (
@@ -52,13 +54,27 @@ export default function ResultPanel() {
             <Tabs
                 className="result-tabs"
                 style={{ marginTop: 12 }}
-                defaultActiveKey="table"
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
                 tabBarExtraContent={{
                     right: (
                         <Button
                             size="small"
+                            type="primary"
                             icon={<CopyOutlined />}
-                            onClick={() => navigator.clipboard.writeText(JSON.stringify(result.json, null, 2))}
+                            onClick={() => {
+                                if (activeTab === "table") {
+                                    navigator.clipboard.writeText(
+                                        JSON.stringify(result.fields, null, 2)
+                                    );
+                                    message.success("表格数据复制成功");
+                                } else  {
+                                    navigator.clipboard.writeText(
+                                        JSON.stringify(result.json, null, 2)
+                                    );
+                                    message.success("JSON数据复制成功");
+                                }
+                            }}
                         >
                             复制结果
                         </Button>
