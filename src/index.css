@@ -1,0 +1,177 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Microsoft YaHei",
+    sans-serif;
+  background: #f5f7fa;
+  color: #1f2329;
+}
+
+code,
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+}
+
+/* ---------------------------------------------------------------- */
+/* App shell                                                         */
+/* ---------------------------------------------------------------- */
+/* IMPORTANT: the previous version forced `height: 100vh` on the
+   layout and `overflow: hidden` on every level below it, then tried
+   to push `height: 100%` all the way down through Card -> Tabs ->
+   table. Any single missing link in that percentage chain (and AntD's
+   Tabs wrapper was exactly that missing link) makes the content
+   collapse to 0px, or on short viewports gets clipped / scrolls
+   inside a tiny box. Using flex (`flex: 1; min-height: 0`)
+   top-to-bottom instead of raw percentages is far more robust, and
+   letting the page scroll naturally when content genuinely needs
+   more room avoids the double-scrollbar / cut-off-button problems
+   entirely. */
+
+.app-layout {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.app-content {
+  padding: 20px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Main working area: input panel + result panel. */
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.left-panel,
+.right-panel {
+  min-width: 0;
+  display: flex;
+}
+
+.left-panel > .ant-card,
+.right-panel > .ant-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-panel .ant-card-body,
+.right-panel .ant-card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stack the two panels vertically on narrow / tablet screens instead
+   of squeezing a fixed-width sidebar. */
+@media (max-width: 900px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Result panel tabs                                                 */
+/* ---------------------------------------------------------------- */
+/* Propagate height with flex, not percentages, through AntD's real
+   Tabs DOM: .ant-tabs -> .ant-tabs-body-holder -> .ant-tabs-body ->
+   .ant-tabs-content (one per pane, active + hidden share this same
+   base class). ".ant-tabs-content-holder" / ".ant-tabs-tabpane" from
+   the previous pass don't exist in this antd version, and forcing
+   display:flex on every ".ant-tabs-content" also hit the *hidden*
+   pane and, with our extra class raising specificity, silently beat
+   antd's own ".ant-tabs-content-hidden { display:none }" rule — so
+   both the table and JSON panes stayed stacked/visible at once no
+   matter which tab was active. The ":not(.ant-tabs-content-hidden)"
+   below is the fix: only the currently visible pane gets stretched,
+   the inactive one is left alone to stay display:none. */
+.result-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.result-tabs .ant-tabs-body-holder,
+.result-tabs .ant-tabs-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.result-tabs .ant-tabs-content:not(.ant-tabs-content-hidden) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.result-panel-scroll {
+  flex: 1;
+  min-height: 220px;
+  max-height: 460px;
+  overflow: auto;
+}
+
+.result-json {
+  height: 100%;
+  overflow: auto;
+  margin: 0;
+  padding: 14px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------- */
+/* Stat blocks (replaces AntD Statistic, which comma-groups numeric-  */
+/* looking strings such as "0200" into "0,200")                      */
+/* ---------------------------------------------------------------- */
+.stat-block .stat-label {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-bottom: 4px;
+}
+
+.stat-block .stat-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- */
+/* Misc                                                               */
+/* ---------------------------------------------------------------- */
+.app-footer {
+  text-align: center;
+  color: #b0b3b8;
+  font-size: 12px;
+  padding: 4px 0 8px;
+}
+
+.hex-textarea textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
