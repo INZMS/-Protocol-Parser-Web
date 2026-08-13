@@ -32,6 +32,12 @@ func ParseCommon(
 		Length: int(header.Length),
 
 		Raw: hex.EncodeToString(data),
+
+		Fields: append(headerFields(header, data), trailerFields(5, data)...),
+
+		Data: map[string]interface{}{
+			"body": hex.EncodeToString(data[headerLength : len(data)-trailerLength]),
+		},
 	}
 
 	return result, nil
