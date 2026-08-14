@@ -36,22 +36,22 @@ export default function ParseTable() {
     }));
 
     const columns = [
-        { title: "序号", dataIndex: "index", key: "index", width: 50 },
-        { title: "字段名称", dataIndex: "name", key: "name", width: 110 },
-        { title: "起始位置", dataIndex: "offset", key: "offset", width: 72 },
-        { title: "长度", dataIndex: "length", key: "length", width: 58 },
+        { title: "序号", dataIndex: "index", key: "index", width: 48 },
+        { title: "字段名称", dataIndex: "name", key: "name", width: 112 },
+        { title: "起始位置", dataIndex: "offset", key: "offset", width: 66 },
+        { title: "长度", dataIndex: "length", key: "length", width: 52 },
         {
             title: "原始值(HEX)",
             dataIndex: "raw",
             key: "raw",
-            width: "21%",
+            width: 180,
             render: (value: string) => <EllipsisCell value={value} mono />
         },
         {
             title: "解析值",
             dataIndex: "value",
             key: "value",
-            width: "21%",
+            width: 180,
             render: (value: string) => <EllipsisCell value={value} />
         },
         {
@@ -63,7 +63,7 @@ export default function ParseTable() {
         {
             title: "操作",
             key: "action",
-            width: 60,
+            width: 52,
             render: (_: any, record: any) => (
                 <Button
                     type="text"

@@ -49,7 +49,53 @@ func extensionName(command uint16) string {
 func extensionValue(property *ReportProperty, item TLV) string {
 	keys := map[uint16]string{0x0024: "singleBaseStation", 0x0004: "voltage", 0x0008: "battery", 0x00A3: "softwareVersion", 0x00A5: "terminalModel", 0x0089: "alarmStatus", 0x00A9: "baseStations", 0x00B9: "wifi", 0x00C5: "extendedLocationStatus", 0x00FB: "iccid", 0x00AE: "workMode", 0xF000: "reportMode", 0xF001: "nextReport", 0x0030: "signalStrength", 0x0031: "satellites"}
 	if key, ok := keys[item.Type]; ok {
-		return fmt.Sprint(property.PropertiesMap[key])
+		value := property.PropertiesMap[key]
+		switch item.Type {
+		case 0x0008:
+			if battery, ok := value.(map[string]interface{}); ok {
+				return fmt.Sprintf("%.2f%%（%v/%v）", battery["percent"], battery["count"], battery["total"])
+			}
+		case 0x0089:
+			if alarm, ok := value.(map[string]interface{}); ok {
+				return fmt.Sprintf("运动=%v，SOS=%v，拆除=%v", alarm["moving"], alarm["sos"], alarm["removed"])
+			}
+		case 0x00A9:
+			if stations, ok := value.(map[string]interface{}); ok {
+				return fmt.Sprintf("%v个基站", stations["count"])
+			}
+		case 0x00B9:
+			if wifi, ok := value.(map[string]interface{}); ok {
+				return fmt.Sprintf("%v个WiFi热点", wifi["count"])
+			}
+		case 0x00C5:
+			if status, ok := value.(map[string]interface{}); ok {
+				labels := map[interface{}]string{"gps": "GPS定位", "wifi": "WiFi定位", "none": "未定位"}
+				if label, exists := labels[status["mode"]]; exists {
+					return label
+				}
+			}
+		case 0x00AE:
+			if mode, ok := value.(map[string]interface{}); ok {
+				labels := map[interface{}]string{1: "闹钟模式", 3: "追踪模式", 4: "星期模式", 6: "月模式"}
+				if label, exists := labels[mode["mode"]]; exists {
+					return label
+				}
+			}
+		case 0xF000:
+			if mode, ok := value.(map[string]interface{}); ok {
+				labels := map[interface{}]string{0: "闹钟模式", 1: "定时回传", 2: "星期模式"}
+				if label, exists := labels[mode["mode"]]; exists {
+					return label
+				}
+			}
+		case 0xF001:
+			if next, ok := value.(map[string]interface{}); ok {
+				if timestamp, ok := next["timestamp"].(int64); ok {
+					return fmt.Sprintf("%s（%v）", timeText(timestamp), next["environment"])
+				}
+			}
+		}
+		return fmt.Sprint(value)
 	}
 	return hex.EncodeToString(item.Value)
 }
