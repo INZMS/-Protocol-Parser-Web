@@ -72,6 +72,9 @@ func TestParseDocumentSample(t *testing.T) {
 	if property.DeviceNo != "13520202020" {
 		t.Fatalf("unexpected device number: %s", property.DeviceNo)
 	}
+	if result.Fields[3].Value != "13520202020" || result.Fields[4].Value != "2021-04-17 18:54:24" {
+		t.Fatalf("unexpected display values: ip=%s time=%s", result.Fields[3].Value, result.Fields[4].Value)
+	}
 	if property.PropertiesMap["softwareVersion"] != "YG_CD01_R2.7" {
 		t.Fatalf("unexpected version: %#v", property.PropertiesMap["softwareVersion"])
 	}

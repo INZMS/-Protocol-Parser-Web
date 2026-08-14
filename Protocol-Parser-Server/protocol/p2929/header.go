@@ -49,7 +49,7 @@ func headerFields(header *Header, data []byte) []core.Field {
 		newField(3, "包长", 3, data[3:5], fmt.Sprintf("%d", header.Length), "从伪IP首字节至包尾的长度"),
 	}
 	if len(header.IP) == 4 {
-		fields = append(fields, newField(4, "伪IP", 5, data[5:9], hex.EncodeToString(header.IP), fmt.Sprintf("终端标识，设备号%s", decodePseudoIP(header.IP))))
+		fields = append(fields, newField(4, "伪IP", 5, data[5:9], decodePseudoIP(header.IP), "转换后的终端设备号"))
 	}
 	return fields
 }

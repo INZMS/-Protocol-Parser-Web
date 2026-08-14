@@ -3,6 +3,7 @@ package p2929
 import (
 	"encoding/hex"
 	"fmt"
+	"time"
 
 	"protocol-parser-server/parser/core"
 )
@@ -52,4 +53,7 @@ func extensionValue(property *ReportProperty, item TLV) string {
 	}
 	return hex.EncodeToString(item.Value)
 }
-func timeText(timestamp int64) string { return fmt.Sprintf("%d", timestamp) }
+func timeText(timestamp int64) string {
+	location := time.FixedZone("CST", 8*60*60)
+	return time.UnixMilli(timestamp).In(location).Format("2006-01-02 15:04:05")
+}

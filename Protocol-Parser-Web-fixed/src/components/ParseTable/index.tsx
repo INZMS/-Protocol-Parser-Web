@@ -1,19 +1,24 @@
-import { Table, Button, Typography } from "antd";
+import { Table, Button, Tooltip, Typography } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 
 import { useParserStore } from "../../store/parser";
 
-function EllipsisCell({ value, width, mono = false }: { value: unknown; width: number; mono?: boolean }) {
+const MAX_VISIBLE_CHARACTERS = 20;
+
+function EllipsisCell({ value, mono = false }: { value: unknown; mono?: boolean }) {
     const text = String(value ?? "");
+    const characters = Array.from(text);
+    const isLong = characters.length > MAX_VISIBLE_CHARACTERS;
+    const displayText = isLong
+        ? `${characters.slice(0, MAX_VISIBLE_CHARACTERS).join("")}…`
+        : text;
 
     return (
-        <Typography.Text
-            className={mono ? "mono" : undefined}
-            ellipsis={{ tooltip: text }}
-            style={{ display: "block", maxWidth: width }}
-        >
-            {text}
-        </Typography.Text>
+        <Tooltip title={isLong ? text : undefined} placement="topLeft">
+            <Typography.Text className={mono ? "mono" : undefined}>
+                {displayText}
+            </Typography.Text>
+        </Tooltip>
     );
 }
 
@@ -31,30 +36,29 @@ export default function ParseTable() {
     }));
 
     const columns = [
-        { title: "序号", dataIndex: "index", key: "index", width: 56 },
-        { title: "字段名称", dataIndex: "name", key: "name", width: 150 },
-        { title: "起始位置", dataIndex: "offset", key: "offset", width: 84 },
-        { title: "长度(字节)", dataIndex: "length", key: "length", width: 92 },
+        { title: "序号", dataIndex: "index", key: "index", width: 50 },
+        { title: "字段名称", dataIndex: "name", key: "name", width: 110 },
+        { title: "起始位置", dataIndex: "offset", key: "offset", width: 72 },
+        { title: "长度", dataIndex: "length", key: "length", width: 58 },
         {
             title: "原始值(HEX)",
             dataIndex: "raw",
             key: "raw",
-            width: 280,
-            render: (value: string) => <EllipsisCell value={value} width={250} mono />
+            width: "21%",
+            render: (value: string) => <EllipsisCell value={value} mono />
         },
         {
             title: "解析值",
             dataIndex: "value",
             key: "value",
-            width: 260,
-            render: (value: string) => <EllipsisCell value={value} width={230} />
+            width: "21%",
+            render: (value: string) => <EllipsisCell value={value} />
         },
         {
             title: "说明",
             dataIndex: "description",
             key: "description",
-            width: 260,
-            render: (value: string) => <EllipsisCell value={value} width={230} />
+            render: (value: string) => <span style={{ overflowWrap: "anywhere" }}>{value}</span>
         },
         {
             title: "操作",
@@ -79,7 +83,6 @@ export default function ParseTable() {
             size="small"
             bordered
             tableLayout="fixed"
-            scroll={{ x: 1500 }}
         />
     );
 }

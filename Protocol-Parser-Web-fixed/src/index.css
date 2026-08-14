@@ -131,12 +131,17 @@ code,
   flex: 1;
   min-height: 220px;
   max-height: 460px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .result-json {
   height: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   margin: 0;
   padding: 14px;
   background: #fafafa;
