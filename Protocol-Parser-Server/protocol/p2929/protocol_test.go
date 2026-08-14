@@ -100,3 +100,14 @@ func TestParseLocationRejectsShortBodyWithoutPanic(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
+
+func TestCoordinateUsesDegreesAndMinutes(t *testing.T) {
+	latitude := parseCoordinate([]byte{0x03, 0x01, 0x26, 0x16}, false)
+	longitude := parseCoordinate([]byte{0x12, 0x01, 0x30, 0x43}, true)
+	if math.Abs(latitude-30.2102666667) > 0.000001 {
+		t.Fatalf("unexpected latitude: %.9f", latitude)
+	}
+	if math.Abs(longitude-120.2173833333) > 0.000001 {
+		t.Fatalf("unexpected longitude: %.9f", longitude)
+	}
+}

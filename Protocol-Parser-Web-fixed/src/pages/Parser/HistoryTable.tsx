@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 
 import RecordDrawer from "../../components/RecordDrawer";
 
-import { mockHistory, mockParseResult, mockRecordDetails } from "../../mock/parser";
+import { mockHistory, mockRecordDetails } from "../../mock/parser";
 
 export default function HistoryTable() {
     const [drawerOpen, setDrawerOpen] = useState(false);

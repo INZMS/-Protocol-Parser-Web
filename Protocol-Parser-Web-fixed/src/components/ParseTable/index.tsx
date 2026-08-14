@@ -1,7 +1,21 @@
-import { Table, Button } from "antd";
+import { Table, Button, Typography } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 
 import { useParserStore } from "../../store/parser";
+
+function EllipsisCell({ value, width, mono = false }: { value: unknown; width: number; mono?: boolean }) {
+    const text = String(value ?? "");
+
+    return (
+        <Typography.Text
+            className={mono ? "mono" : undefined}
+            ellipsis={{ tooltip: text }}
+            style={{ display: "block", maxWidth: width }}
+        >
+            {text}
+        </Typography.Text>
+    );
+}
 
 export default function ParseTable() {
     const { result } = useParserStore();
@@ -18,17 +32,30 @@ export default function ParseTable() {
 
     const columns = [
         { title: "序号", dataIndex: "index", key: "index", width: 56 },
-        { title: "字段名称", dataIndex: "name", key: "name" },
+        { title: "字段名称", dataIndex: "name", key: "name", width: 150 },
         { title: "起始位置", dataIndex: "offset", key: "offset", width: 84 },
         { title: "长度(字节)", dataIndex: "length", key: "length", width: 92 },
         {
             title: "原始值(HEX)",
             dataIndex: "raw",
             key: "raw",
-            render: (value: string) => <span className="mono">{value}</span>
+            width: 280,
+            render: (value: string) => <EllipsisCell value={value} width={250} mono />
         },
-        { title: "解析值", dataIndex: "value", key: "value" },
-        { title: "说明", dataIndex: "description", key: "description" },
+        {
+            title: "解析值",
+            dataIndex: "value",
+            key: "value",
+            width: 260,
+            render: (value: string) => <EllipsisCell value={value} width={230} />
+        },
+        {
+            title: "说明",
+            dataIndex: "description",
+            key: "description",
+            width: 260,
+            render: (value: string) => <EllipsisCell value={value} width={230} />
+        },
         {
             title: "操作",
             key: "action",
@@ -51,6 +78,8 @@ export default function ParseTable() {
             pagination={false}
             size="small"
             bordered
+            tableLayout="fixed"
+            scroll={{ x: 1500 }}
         />
     );
 }
