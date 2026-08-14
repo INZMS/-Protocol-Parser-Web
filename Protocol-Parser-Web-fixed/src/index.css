@@ -171,8 +171,8 @@ code,
 }
 
 .parse-result-table .ant-table-tbody > tr > td {
-  height: 42px;
-  padding: 8px 12px;
+  min-height: 48px;
+  padding: 7px 12px;
   border-bottom: 1px solid #f0f2f5;
   vertical-align: middle;
 }
@@ -185,40 +185,37 @@ code,
   background: #f3f7ff !important;
 }
 
-.parse-field-name,
 .parse-value-with-action {
   display: flex;
   align-items: center;
   min-width: 0;
 }
 
+.parse-field-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.parse-field-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
 .parse-field-name {
-  gap: 9px;
+  flex: 0 0 auto;
   font-weight: 500;
   color: #263142;
 }
 
-.parse-field-index {
-  flex: 0 0 24px;
-  height: 24px;
-  line-height: 24px;
-  border-radius: 6px;
-  text-align: center;
-  background: #eef3fa;
-  color: #6b778c;
-  font-size: 11px;
-  font-weight: 600;
-}
-
 .parse-position {
-  color: #7b8494;
+  color: #98a1af;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-}
-
-.parse-position > span {
-  color: #c2c8d0;
-  margin: 0 2px;
 }
 
 .parse-cell-raw {
@@ -257,8 +254,9 @@ code,
 }
 
 .parse-description {
-  color: #687385;
-  line-height: 1.45;
+  color: #7b8492;
+  font-size: 12px;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 

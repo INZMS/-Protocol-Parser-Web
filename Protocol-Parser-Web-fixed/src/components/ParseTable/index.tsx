@@ -29,47 +29,38 @@ export default function ParseTable() {
         return null;
     }
 
-    const data = result.fields.map((item, index) => ({
-        key: index,
-        displayIndex: index + 1,
-        ...item
-    }));
+    const data = result.fields.map((item, index) => ({ key: index, ...item }));
 
     const columns = [
         {
-            title: "字段",
+            title: "字段信息",
             dataIndex: "name",
             key: "name",
-            width: 150,
+            width: "34%",
             render: (value: string, record: any) => (
-                <div className="parse-field-name">
-                    <span className="parse-field-index">{record.displayIndex}</span>
-                    <span>{value}</span>
+                <div className="parse-field-info">
+                    <div className="parse-field-heading">
+                        <span className="parse-field-name">{value}</span>
+                        <span className="parse-position">
+                            偏移 {record.offset} · {record.length}B
+                        </span>
+                    </div>
+                    <span className="parse-description">{record.description}</span>
                 </div>
             )
         },
         {
-            title: "位置 / 长度",
-            key: "position",
-            width: 100,
-            render: (_: unknown, record: any) => (
-                <span className="parse-position">
-                    {record.offset} <span>·</span> {record.length}B
-                </span>
-            )
-        },
-        {
-            title: "原始值",
+            title: "原始值（HEX）",
             dataIndex: "raw",
             key: "raw",
-            width: 190,
+            width: "27%",
             render: (value: string) => <CompactValue value={value} mono />
         },
         {
             title: "解析结果",
             dataIndex: "value",
             key: "value",
-            width: 230,
+            width: "39%",
             render: (value: string) => (
                 <div className="parse-value-with-action">
                     <CompactValue value={value} />
@@ -88,12 +79,6 @@ export default function ParseTable() {
                     </Tooltip>
                 </div>
             )
-        },
-        {
-            title: "说明",
-            dataIndex: "description",
-            key: "description",
-            render: (value: string) => <span className="parse-description">{value}</span>
         }
     ];
 
