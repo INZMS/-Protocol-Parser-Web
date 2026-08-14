@@ -83,9 +83,11 @@ func parseExtension(result *ReportProperty, item TLV) {
 	case 0x00FB:
 		result.PropertiesMap["iccid"] = strings.TrimRight(string(item.Value), "\x00")
 	case 0x00AE:
-		result.PropertiesMap["workMode"] = map[string]interface{}{"mode": first(item.Value), "raw": raw}
+		mode := first(item.Value)
+		result.PropertiesMap["workMode"] = map[string]interface{}{"mode": mode, "label": workModeLabel(mode), "raw": raw}
 	case 0xF000:
-		result.PropertiesMap["reportMode"] = map[string]interface{}{"mode": first(item.Value), "raw": raw}
+		mode := first(item.Value)
+		result.PropertiesMap["reportMode"] = map[string]interface{}{"mode": mode, "label": reportModeLabel(mode), "raw": raw}
 	case 0xF001:
 		result.PropertiesMap["nextReport"] = parseNextReport(item.Value)
 	case 0x0030:
@@ -154,8 +156,34 @@ func parseNextReport(data []byte) interface{} {
 	if err != nil {
 		return hex.EncodeToString(data)
 	}
-	environment := map[byte]string{0: "全天空", 1: "半天空", 2: "地下室"}[data[6]]
-	return map[string]interface{}{"timestamp": timestamp, "environment": environment}
+	environmentCode := data[6]
+	environment := map[byte]string{0: "全天空", 1: "半天空", 2: "地下室"}[environmentCode]
+	if environment == "" {
+		environment = fmt.Sprintf("未知环境（%d）", environmentCode)
+	}
+	return map[string]interface{}{
+		"timestamp":       timestamp,
+		"timeText":        timeText(timestamp),
+		"timeZone":        "Asia/Shanghai",
+		"environment":     environment,
+		"environmentCode": int(environmentCode),
+	}
+}
+
+func workModeLabel(mode int) string {
+	labels := map[int]string{1: "闹钟模式", 3: "追踪模式", 4: "星期模式", 6: "月模式"}
+	if label, ok := labels[mode]; ok {
+		return label
+	}
+	return fmt.Sprintf("未知工作模式（%d）", mode)
+}
+
+func reportModeLabel(mode int) string {
+	labels := map[int]string{0: "闹钟模式", 1: "定时回传", 2: "星期模式"}
+	if label, ok := labels[mode]; ok {
+		return label
+	}
+	return fmt.Sprintf("未知上报模式（%d）", mode)
 }
 func bit(data []byte, index uint) byte {
 	value := uint64(0)

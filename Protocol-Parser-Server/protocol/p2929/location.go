@@ -79,23 +79,15 @@ func extensionValue(property *ReportProperty, item TLV) string {
 			}
 		case 0x00AE:
 			if mode, ok := value.(map[string]interface{}); ok {
-				labels := map[interface{}]string{1: "闹钟模式", 3: "追踪模式", 4: "星期模式", 6: "月模式"}
-				if label, exists := labels[mode["mode"]]; exists {
-					return label
-				}
+				return fmt.Sprintf("%v（模式值：%v）", mode["label"], mode["mode"])
 			}
 		case 0xF000:
 			if mode, ok := value.(map[string]interface{}); ok {
-				labels := map[interface{}]string{0: "闹钟模式", 1: "定时回传", 2: "星期模式"}
-				if label, exists := labels[mode["mode"]]; exists {
-					return label
-				}
+				return fmt.Sprintf("%v（模式值：%v）", mode["label"], mode["mode"])
 			}
 		case 0xF001:
 			if next, ok := value.(map[string]interface{}); ok {
-				if timestamp, ok := next["timestamp"].(int64); ok {
-					return fmt.Sprintf("%s（%v）", timeText(timestamp), next["environment"])
-				}
+				return fmt.Sprintf("时间：%v；定位环境：%v（环境值：%v）", next["timeText"], next["environment"], next["environmentCode"])
 			}
 		}
 		return fmt.Sprint(value)

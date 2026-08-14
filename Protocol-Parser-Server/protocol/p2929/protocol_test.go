@@ -87,6 +87,12 @@ func TestParseDocumentSample(t *testing.T) {
 	if property.PropertiesMap["iccid"] != "89860412101870844665" {
 		t.Fatalf("unexpected ICCID: %#v", property.PropertiesMap["iccid"])
 	}
+	if result.Fields[24].Value != "追踪模式（模式值：3）" || result.Fields[25].Value != "定时回传（模式值：1）" {
+		t.Fatalf("unexpected modes: work=%s report=%s", result.Fields[24].Value, result.Fields[25].Value)
+	}
+	if result.Fields[26].Value != "时间：2021-04-17 18:59:07（北京时间）；定位环境：全天空（环境值：0）" {
+		t.Fatalf("unexpected next report: %s", result.Fields[26].Value)
+	}
 }
 
 func TestParseRejectsDeclaredLengthMismatch(t *testing.T) {
