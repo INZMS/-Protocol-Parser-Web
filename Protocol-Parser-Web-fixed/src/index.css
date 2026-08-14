@@ -219,16 +219,25 @@ code,
 }
 
 .parse-cell-raw {
+  display: block;
   color: #546175;
   font-size: 12px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 .parse-cell-value {
+  display: block;
   color: #1254a1;
   font-weight: 500;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .parse-value-with-action {
+  align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
 }

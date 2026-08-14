@@ -3,25 +3,6 @@ import { CopyOutlined } from "@ant-design/icons";
 
 import { useParserStore } from "../../store/parser";
 
-const MAX_VISIBLE_CHARACTERS = 20;
-
-function CompactValue({ value, mono = false }: { value: unknown; mono?: boolean }) {
-    const text = String(value ?? "");
-    const characters = Array.from(text);
-    const isLong = characters.length > MAX_VISIBLE_CHARACTERS;
-    const visible = isLong
-        ? `${characters.slice(0, MAX_VISIBLE_CHARACTERS).join("")}…`
-        : text;
-
-    return (
-        <Tooltip title={isLong ? text : undefined} placement="topLeft">
-            <Typography.Text className={mono ? "mono parse-cell-raw" : "parse-cell-value"}>
-                {visible}
-            </Typography.Text>
-        </Tooltip>
-    );
-}
-
 export default function ParseTable() {
     const { result } = useParserStore();
 
@@ -54,7 +35,11 @@ export default function ParseTable() {
             dataIndex: "raw",
             key: "raw",
             width: "27%",
-            render: (value: string) => <CompactValue value={value} mono />
+            render: (value: string) => (
+                <Typography.Text className="mono parse-cell-raw">
+                    {String(value ?? "")}
+                </Typography.Text>
+            )
         },
         {
             title: "解析结果",
@@ -63,7 +48,9 @@ export default function ParseTable() {
             width: "39%",
             render: (value: string) => (
                 <div className="parse-value-with-action">
-                    <CompactValue value={value} />
+                    <Typography.Text className="parse-cell-value">
+                        {String(value ?? "")}
+                    </Typography.Text>
                     <Tooltip title="复制完整解析值">
                         <Button
                             className="parse-copy-button"
