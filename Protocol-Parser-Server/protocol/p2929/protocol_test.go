@@ -72,7 +72,7 @@ func TestParseDocumentSample(t *testing.T) {
 	if property.DeviceNo != "13520202020" {
 		t.Fatalf("unexpected device number: %s", property.DeviceNo)
 	}
-	if result.Fields[3].Value != "13520202020" || result.Fields[4].Value != "2021-04-17 18:54:24" {
+	if result.Fields[3].Value != "13520202020" || result.Fields[4].Value != "2021-04-17 18:54:24（北京时间）" {
 		t.Fatalf("unexpected display values: ip=%s time=%s", result.Fields[3].Value, result.Fields[4].Value)
 	}
 	if result.Fields[16].Value != "74.60%（1119/1500）" || result.Fields[20].Value != "3个基站" || result.Fields[21].Value != "5个WiFi热点" || result.Fields[22].Value != "WiFi定位" {

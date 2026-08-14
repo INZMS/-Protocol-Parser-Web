@@ -8,6 +8,8 @@ import (
 	"protocol-parser-server/parser/core"
 )
 
+var beijingLocation = time.FixedZone("Asia/Shanghai", 8*60*60)
+
 func ParseLocation(p *Protocol2929, header *Header, data []byte) (*core.ParseResult, error) {
 	property, tlvs, err := ParseReportProperty(header, data)
 	if err != nil {
@@ -19,7 +21,7 @@ func ParseLocation(p *Protocol2929, header *Header, data []byte) (*core.ParseRes
 	vehicle := property.PropertiesMap["vehicleStatus"].(map[string]interface{})
 	fields := headerFields(header, data)
 	fields = append(fields,
-		newField(5, "定位时间", 9, body[0:6], timeText(property.Timestamp), "YYMMDDHHmmss压缩BCD"),
+		newField(5, "定位时间", 9, body[0:6], timeText(property.Timestamp), "北京时间（UTC+8），YYMMDDHHmmss压缩BCD"),
 		newField(6, "纬度", 15, body[6:10], fmt.Sprint(location["lat"]), "DDMM.mmm，最高位为南纬符号"),
 		newField(7, "经度", 19, body[10:14], fmt.Sprint(location["lng"]), "DDDMM.mmm，最高位为西经符号"),
 		newField(8, "速度", 23, body[14:16], fmt.Sprintf("%v km/h", property.PropertiesMap["speed"]), "压缩BCD"),
@@ -100,6 +102,5 @@ func extensionValue(property *ReportProperty, item TLV) string {
 	return hex.EncodeToString(item.Value)
 }
 func timeText(timestamp int64) string {
-	location := time.FixedZone("CST", 8*60*60)
-	return time.UnixMilli(timestamp).In(location).Format("2006-01-02 15:04:05")
+	return time.UnixMilli(timestamp).In(beijingLocation).Format("2006-01-02 15:04:05") + "（北京时间）"
 }

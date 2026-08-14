@@ -36,6 +36,8 @@ func ParseReportProperty(header *Header, data []byte) (*ReportProperty, []TLV, e
 	result.PropertiesMap["vehicleStatus"] = map[string]interface{}{"raw": fmt.Sprintf("%08X", location.VehicleStatus), "needAck": location.NeedAck, "transport": location.Transport, "signalStrength": location.SignalStrength}
 	result.PropertiesMap["centerCommand"] = fmt.Sprintf("0x%02X", location.CenterCommand)
 	result.PropertiesMap["deviceTime"] = location.DeviceTime
+	result.PropertiesMap["deviceTimeText"] = timeText(location.DeviceTime)
+	result.PropertiesMap["timeZone"] = "Asia/Shanghai"
 	extension := body[locationBaseLength:]
 	result.PropertiesMap["rawExtension"] = hex.EncodeToString(extension)
 	tlvs, err := ParseTLV(extension)
@@ -185,7 +187,7 @@ func parse2929Time(data []byte) (int64, error) {
 	hour := bcd(data[3])
 	minute := bcd(data[4])
 	second := bcd(data[5])
-	value := time.Date(year, month, day, hour, minute, second, 0, time.FixedZone("CST", 8*60*60))
+	value := time.Date(year, month, day, hour, minute, second, 0, beijingLocation)
 	if value.Year() != year || value.Month() != month || value.Day() != day || value.Hour() != hour || value.Minute() != minute || value.Second() != second {
 		return 0, fmt.Errorf("无效日期时间")
 	}
