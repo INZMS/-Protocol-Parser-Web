@@ -151,6 +151,124 @@ code,
   line-height: 1.7;
 }
 
+/* Compact field table: keep raw protocol data dense while giving parsed
+   values a clear visual priority. */
+.parse-result-table .ant-table {
+  border: 1px solid #edf0f3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.parse-result-table .ant-table-thead > tr > th {
+  height: 42px;
+  padding: 9px 12px;
+  background: #f7f9fc;
+  color: #596273;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: 1px solid #e8ecf1;
+}
+
+.parse-result-table .ant-table-tbody > tr > td {
+  height: 42px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f2f5;
+  vertical-align: middle;
+}
+
+.parse-result-table .ant-table-tbody > tr.parse-row-even > td {
+  background: #fbfcfe;
+}
+
+.parse-result-table .ant-table-tbody > tr:hover > td {
+  background: #f3f7ff !important;
+}
+
+.parse-field-name,
+.parse-value-with-action {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.parse-field-name {
+  gap: 9px;
+  font-weight: 500;
+  color: #263142;
+}
+
+.parse-field-index {
+  flex: 0 0 24px;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 6px;
+  text-align: center;
+  background: #eef3fa;
+  color: #6b778c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.parse-position {
+  color: #7b8494;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.parse-position > span {
+  color: #c2c8d0;
+  margin: 0 2px;
+}
+
+.parse-cell-raw {
+  color: #546175;
+  font-size: 12px;
+}
+
+.parse-cell-value {
+  color: #1254a1;
+  font-weight: 500;
+}
+
+.parse-value-with-action {
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.parse-value-with-action .ant-typography {
+  min-width: 0;
+}
+
+.parse-copy-button {
+  flex: 0 0 auto;
+  color: #8b95a5;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.parse-result-table .ant-table-row:hover .parse-copy-button,
+.parse-copy-button:focus-visible {
+  opacity: 1;
+}
+
+.parse-copy-button:hover {
+  color: #1677ff !important;
+}
+
+.parse-description {
+  color: #687385;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  .parse-result-table .ant-table-thead > tr > th,
+  .parse-result-table .ant-table-tbody > tr > td {
+    padding-inline: 8px;
+  }
+}
+
 /* ---------------------------------------------------------------- */
 /* Stat blocks (replaces AntD Statistic, which comma-groups numeric-  */
 /* looking strings such as "0200" into "0,200")                      */
