@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"encoding/hex"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,7 +12,8 @@ import (
 )
 
 type AnalyzeRequest struct {
-	Hex string `json:"hex"`
+	Hex      string `json:"hex"`
+	Protocol string `json:"protocol"`
 }
 
 // 注册解析路由
@@ -37,7 +39,8 @@ func analyze(c *gin.Context) {
 
 	}
 
-	data, err := hex.DecodeString(req.Hex)
+	normalized := strings.NewReplacer(" ", "", "\n", "", "\r", "", "\t", "").Replace(req.Hex)
+	data, err := hex.DecodeString(normalized)
 
 	if err != nil {
 
@@ -50,7 +53,12 @@ func analyze(c *gin.Context) {
 
 	}
 
-	p, err := core.Detect(data)
+	var p core.Protocol
+	if req.Protocol != "" {
+		p, err = core.Get(req.Protocol)
+	} else {
+		p, err = core.Detect(data)
+	}
 
 	if err != nil {
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Select, Input, Button, Space, Tag } from "antd";
+import { Card, Select, Input, Button, Space, Tag, message } from "antd";
 import { PlayCircleOutlined, ClearOutlined, DownOutlined, UpOutlined } from "@ant-design/icons";
 
 import { useParserStore } from "../../store/parser";
@@ -9,7 +9,7 @@ const MAX_HEX_LENGTH = 4096;
 const VISIBLE_EXAMPLES = 3;
 
 export default function InputPanel() {
-    const { hex, setHex, parse, clear } = useParserStore();
+    const { protocol, hex, setProtocol, setHex, parse, clear, loading } = useParserStore();
     const [showAllExamples, setShowAllExamples] = useState(false);
 
     const byteCount = hex ? Math.ceil(hex.replace(/\s/g, "").length / 2) : 0;
@@ -23,9 +23,9 @@ export default function InputPanel() {
 
                 <Select
                     style={{ width: "100%" }}
-                    defaultValue="JT808"
+                    value={protocol}
+                    onChange={setProtocol}
                     options={[
-                        { label: "JT-808", value: "JT808" },
                         { label: "2929协议", value: "2929" }
                     ]}
                 />
@@ -103,7 +103,8 @@ export default function InputPanel() {
                     block
                     icon={<PlayCircleOutlined />}
                     disabled={!hex.trim()}
-                    onClick={parse}
+                    loading={loading}
+                    onClick={() => parse().catch(() => message.error(useParserStore.getState().error || "解析失败"))}
                 >
                     解析报文
                 </Button>

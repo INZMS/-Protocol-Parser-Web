@@ -20,15 +20,15 @@ export default function ParseTable() {
         { title: "序号", dataIndex: "index", key: "index", width: 56 },
         { title: "字段名称", dataIndex: "name", key: "name" },
         { title: "起始位置", dataIndex: "offset", key: "offset", width: 84 },
-        { title: "长度(字节)", dataIndex: "len", key: "len", width: 92 },
+        { title: "长度(字节)", dataIndex: "length", key: "length", width: 92 },
         {
             title: "原始值(HEX)",
-            dataIndex: "hex",
-            key: "hex",
+            dataIndex: "raw",
+            key: "raw",
             render: (value: string) => <span className="mono">{value}</span>
         },
         { title: "解析值", dataIndex: "value", key: "value" },
-        { title: "说明", dataIndex: "desc", key: "desc" },
+        { title: "说明", dataIndex: "description", key: "description" },
         {
             title: "操作",
             key: "action",

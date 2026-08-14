@@ -1,12 +1,13 @@
 package p2929
 
 import (
+	"encoding/hex"
 	"strings"
 	"testing"
 )
 
 func packet(cmd byte, body []byte) []byte {
-	length := headerLength + len(body) + trailerLength
+	length := 4 + len(body) + trailerLength
 	data := []byte{0x29, 0x29, cmd, byte(length >> 8), byte(length), 0x01, 0x02, 0x03, 0x04}
 	data = append(data, body...)
 	var checksum byte
@@ -17,7 +18,7 @@ func packet(cmd byte, body []byte) []byte {
 }
 
 func TestParseCommonFields(t *testing.T) {
-	result, err := New().Parse(packet(0x21, []byte{0x01, 0x02}))
+	result, err := New().Parse(packet(0xD8, []byte{0x01, 0x02}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +37,7 @@ func TestParseLocation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if result.MessageName != "一般位置数据" || len(result.Fields) != 13 {
+	if result.MessageName != "一般位置数据" || len(result.Fields) != 16 {
 		t.Fatalf("unexpected location result: %#v", result)
 	}
 	property := result.Data.(*ReportProperty)
@@ -44,8 +45,33 @@ func TestParseLocation(t *testing.T) {
 	if location["lat"].(float64) < 22.54 || location["lng"].(float64) < 114.08 {
 		t.Fatalf("unexpected coordinates: %#v", location)
 	}
-	if property.PropertiesMap["hasValidLocation"] != true {
+	if property.PropertiesMap["locationStatus"].(map[string]interface{})["valid"] != true {
 		t.Fatal("expected valid location")
+	}
+}
+
+func TestParseDocumentSample(t *testing.T) {
+	const sample = "292980013B14941494210417185424022409531141642500000000FF000000FFF750FFFFFFFFFFFFFFFF00001200243436303B30303B393336393B343934320005000429680000040008045F000F00A359475F434430315F52322E373B000600A50000001000060089FFFFFFFF002400A901CC00032499134E1C249913121C249911EF1C000000000000000000000000000000007000B90532633A36313A30343A37393A64333A39632C2D36372C63633A30383A66623A39383A62373A39352C2D37322C30383A39623A34623A39643A39623A35312C2D37332C39633A32313A36613A65343A31353A65382C2D37382C39633A61363A31353A39663A64303A62302C2D3833000600C500001010001600FB3839383630343132313031383730383434363635000500AE0300050005F0000100050009F00121041718590700D50D"
+	data, err := hex.DecodeString(sample)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := New().Parse(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Length != 320 || len(result.Fields) != 29 {
+		t.Fatalf("length=%d fields=%d", result.Length, len(result.Fields))
+	}
+	property := result.Data.(*ReportProperty)
+	if property.DeviceNo != "13520202020" {
+		t.Fatalf("unexpected device number: %s", property.DeviceNo)
+	}
+	if property.PropertiesMap["softwareVersion"] != "YG_CD01_R2.7" {
+		t.Fatalf("unexpected version: %#v", property.PropertiesMap["softwareVersion"])
+	}
+	if property.PropertiesMap["iccid"] != "89860412101870844665" {
+		t.Fatalf("unexpected ICCID: %#v", property.PropertiesMap["iccid"])
 	}
 }
 

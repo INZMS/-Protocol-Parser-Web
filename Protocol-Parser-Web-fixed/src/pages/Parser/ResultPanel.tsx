@@ -70,7 +70,7 @@ export default function ResultPanel() {
                                     message.success("表格数据复制成功");
                                 } else  {
                                     navigator.clipboard.writeText(
-                                        JSON.stringify(result.json, null, 2)
+                                        JSON.stringify(result.data, null, 2)
                                     );
                                     message.success("JSON数据复制成功");
                                 }
@@ -101,7 +101,7 @@ export default function ResultPanel() {
                         children: (
                             <div className="result-panel-scroll">
                                 <pre className="result-json">
-                                    {JSON.stringify(result.json, null, 2)}
+                                    {JSON.stringify(result.data, null, 2)}
                                 </pre>
                             </div>
                         )

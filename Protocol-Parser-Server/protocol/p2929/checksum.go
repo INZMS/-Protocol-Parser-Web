@@ -3,7 +3,7 @@ package p2929
 import "fmt"
 
 func CheckChecksum(data []byte) error {
-	if len(data) < headerLength+trailerLength {
+	if len(data) < 7 {
 		return fmt.Errorf("数据长度不足")
 	}
 	if data[len(data)-1] != 0x0D {
