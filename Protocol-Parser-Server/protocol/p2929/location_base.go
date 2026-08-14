@@ -70,11 +70,11 @@ func parseCoordinate(data []byte, longitude bool) float64 {
 	negative := value[0]&0x80 != 0
 	value[0] &= 0x7F
 	digits := bcdString(value)
-	degreeDigits := 2
+	degreeStart, minuteStart := 1, 3
 	if longitude {
-		degreeDigits = 3
+		degreeStart, minuteStart = 0, 3
 	}
-	coordinate := float64(toInt(digits[:degreeDigits])) + float64(toInt(digits[degreeDigits:]))/60000
+	coordinate := float64(toInt(digits[degreeStart:minuteStart])) + float64(toInt(digits[minuteStart:]))/60000
 	if negative {
 		return -coordinate
 	}

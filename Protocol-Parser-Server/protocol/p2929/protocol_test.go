@@ -2,6 +2,7 @@ package p2929
 
 import (
 	"encoding/hex"
+	"math"
 	"strings"
 	"testing"
 )
@@ -32,7 +33,7 @@ func TestParseCommonFields(t *testing.T) {
 
 func TestParseLocation(t *testing.T) {
 	body := make([]byte, locationBaseLength)
-	copy(body, []byte{0x26, 0x08, 0x13, 0x10, 0x20, 0x30, 0x22, 0x32, 0x55, 0x60, 0x11, 0x40, 0x52, 0x81, 0x00, 0x60, 0x01, 0x80, 0x80})
+	copy(body, []byte{0x26, 0x08, 0x13, 0x10, 0x20, 0x30, 0x02, 0x23, 0x25, 0x56, 0x11, 0x40, 0x52, 0x81, 0x00, 0x60, 0x01, 0x80, 0x80})
 	result, err := New().Parse(packet(0x80, body))
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +43,7 @@ func TestParseLocation(t *testing.T) {
 	}
 	property := result.Data.(*ReportProperty)
 	location := property.PropertiesMap["location"].(map[string]interface{})
-	if location["lat"].(float64) < 22.54 || location["lng"].(float64) < 114.08 {
+	if math.Abs(location["lat"].(float64)-22.5426) > 0.000001 || math.Abs(location["lng"].(float64)-114.0880166667) > 0.000001 {
 		t.Fatalf("unexpected coordinates: %#v", location)
 	}
 	if property.PropertiesMap["locationStatus"].(map[string]interface{})["valid"] != true {
@@ -64,6 +65,10 @@ func TestParseDocumentSample(t *testing.T) {
 		t.Fatalf("length=%d fields=%d", result.Length, len(result.Fields))
 	}
 	property := result.Data.(*ReportProperty)
+	location := property.PropertiesMap["location"].(map[string]interface{})
+	if math.Abs(location["lat"].(float64)-22.68255) > 0.000001 || math.Abs(location["lng"].(float64)-114.27375) > 0.000001 {
+		t.Fatalf("unexpected document coordinates: %#v", location)
+	}
 	if property.DeviceNo != "13520202020" {
 		t.Fatalf("unexpected device number: %s", property.DeviceNo)
 	}
