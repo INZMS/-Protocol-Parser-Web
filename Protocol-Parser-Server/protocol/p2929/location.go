@@ -3,6 +3,7 @@ package p2929
 import (
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"time"
 
 	"protocol-parser-server/parser/core"
@@ -63,11 +64,11 @@ func extensionValue(property *ReportProperty, item TLV) string {
 			}
 		case 0x00A9:
 			if stations, ok := value.(map[string]interface{}); ok {
-				return fmt.Sprintf("%v个基站", stations["count"])
+				return baseStationsText(stations)
 			}
 		case 0x00B9:
 			if wifi, ok := value.(map[string]interface{}); ok {
-				return fmt.Sprintf("%v个WiFi热点", wifi["count"])
+				return wifiText(wifi)
 			}
 		case 0x00C5:
 			if status, ok := value.(map[string]interface{}); ok {
@@ -100,6 +101,26 @@ func extensionValue(property *ReportProperty, item TLV) string {
 		return fmt.Sprint(value)
 	}
 	return hex.EncodeToString(item.Value)
+}
+
+func baseStationsText(value map[string]interface{}) string {
+	parts := []string{fmt.Sprintf("%v个基站（MCC=%v，MNC=%v）", value["count"], value["country"], value["operator"])}
+	if stations, ok := value["stations"].([]map[string]int); ok {
+		for index, station := range stations {
+			parts = append(parts, fmt.Sprintf("#%d LAC=%d，CellID=%d，信号=%d", index+1, station["area"], station["tower"], station["signal"]))
+		}
+	}
+	return strings.Join(parts, "；")
+}
+
+func wifiText(value map[string]interface{}) string {
+	parts := []string{fmt.Sprintf("%v个WiFi热点", value["count"])}
+	if hotspots, ok := value["hotspots"].([]map[string]interface{}); ok {
+		for index, hotspot := range hotspots {
+			parts = append(parts, fmt.Sprintf("#%d %v（%v dBm）", index+1, hotspot["mac"], hotspot["signal"]))
+		}
+	}
+	return strings.Join(parts, "；")
 }
 func timeText(timestamp int64) string {
 	return time.UnixMilli(timestamp).In(beijingLocation).Format("2006-01-02 15:04:05") + "（北京时间）"

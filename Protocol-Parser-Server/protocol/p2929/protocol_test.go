@@ -75,7 +75,10 @@ func TestParseDocumentSample(t *testing.T) {
 	if result.Fields[3].Value != "13520202020" || result.Fields[4].Value != "2021-04-17 18:54:24（北京时间）" {
 		t.Fatalf("unexpected display values: ip=%s time=%s", result.Fields[3].Value, result.Fields[4].Value)
 	}
-	if result.Fields[16].Value != "74.60%（1119/1500）" || result.Fields[20].Value != "3个基站" || result.Fields[21].Value != "5个WiFi热点" || result.Fields[22].Value != "WiFi定位" {
+	if result.Fields[16].Value != "74.60%（1119/1500）" ||
+		!strings.Contains(result.Fields[20].Value, "#1 LAC=9369，CellID=4942，信号=28") ||
+		!strings.Contains(result.Fields[21].Value, "#1 2c:61:04:79:d3:9c（-67 dBm）") ||
+		result.Fields[22].Value != "WiFi定位" {
 		t.Fatalf("unexpected extension summaries: battery=%s stations=%s wifi=%s location=%s", result.Fields[16].Value, result.Fields[20].Value, result.Fields[21].Value, result.Fields[22].Value)
 	}
 	if property.PropertiesMap["softwareVersion"] != "YG_CD01_R2.7" {

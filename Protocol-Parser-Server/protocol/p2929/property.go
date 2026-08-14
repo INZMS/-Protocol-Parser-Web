@@ -3,6 +3,7 @@ package p2929
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -98,10 +99,22 @@ func parseExtension(result *ReportProperty, item TLV) {
 
 func parseWifi(data []byte) map[string]interface{} {
 	if len(data) == 0 {
-		return map[string]interface{}{"count": 0, "hotspots": []string{}}
+		return map[string]interface{}{"count": 0, "hotspots": []map[string]interface{}{}}
 	}
 	parts := strings.Split(string(data[1:]), ",")
-	return map[string]interface{}{"count": int(data[0]), "hotspots": parts}
+	count := int(data[0])
+	hotspots := make([]map[string]interface{}, 0, count)
+	for i := 0; i+1 < len(parts) && len(hotspots) < count; i += 2 {
+		signal, err := strconv.Atoi(strings.TrimSpace(parts[i+1]))
+		if err != nil {
+			continue
+		}
+		hotspots = append(hotspots, map[string]interface{}{
+			"mac":    strings.TrimSpace(parts[i]),
+			"signal": signal,
+		})
+	}
+	return map[string]interface{}{"count": count, "hotspots": hotspots}
 }
 func parseBaseStations(data []byte) map[string]interface{} {
 	result := map[string]interface{}{"raw": hex.EncodeToString(data)}
@@ -112,7 +125,7 @@ func parseBaseStations(data []byte) map[string]interface{} {
 	result["operator"] = int(data[2])
 	result["count"] = int(data[3])
 	stations := []map[string]int{}
-	for i := 4; i+5 <= len(data); i += 5 {
+	for i := 4; i+5 <= len(data) && len(stations) < result["count"].(int); i += 5 {
 		stations = append(stations, map[string]int{"area": int(data[i])<<8 | int(data[i+1]), "tower": int(data[i+2])<<8 | int(data[i+3]), "signal": int(data[i+4])})
 	}
 	result["stations"] = stations
